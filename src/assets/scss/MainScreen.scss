@@ -2,9 +2,7 @@ div#MainScreen {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 100%;
-  min-height: 100vh;
-  padding: clamp(1.5rem, 4vw, 3rem);
+  padding: 2%;
   box-sizing: border-box;
   background-size: cover;
   background-repeat: no-repeat;
@@ -12,16 +10,12 @@ div#MainScreen {
 }
 
 div#MainScreen .content_wrapper {
-  width: min(960px, 100%);
   display: flex;
   flex-direction: column;
-  gap: clamp(1rem, 3vw, 2.5rem);
-  padding: clamp(1.5rem, 3vw, 3rem);
-  border-radius: 28px;
-  background: rgba(10, 24, 44, 0.72);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 32px 56px rgba(0, 0, 0, 0.35);
-  color: #f5f7ff;
+  gap: 2%;
+  height: 100%;
+  flex-wrap: wrap;
+  align-items: center;
 }
 
 div#MainScreen .title {
@@ -41,36 +35,34 @@ div#MainScreen .round_indicator {
   letter-spacing: 0.05em;
 }
 
-div#MainScreen .instructions {
-  margin: 0 auto;
-  max-width: 680px;
-  text-align: center;
-  font-size: clamp(1rem, 2vw, 1.25rem);
-  color: rgba(255, 255, 255, 0.85);
-  line-height: 1.5;
-}
-
 div#MainScreen .items_wrapper {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: clamp(1rem, 2.5vw, 2rem);
+  display: flex;
+  gap: 1.5rem;
   width: 100%;
+  flex: auto;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  align-content: center;
+  padding: 1rem 0;
+  row-gap: 1.5rem;
 }
 
 div#MainScreen .controls {
   display: flex;
   justify-content: center;
   gap: 1rem;
-  margin-top: clamp(1rem, 2vw, 1.5rem);
+  padding: 1rem;
   flex-wrap: wrap;
+  background: rgba(12, 26, 45, 0.6);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 16px 28px rgba(0, 0, 0, 0.25);
 }
 
 div#MainScreen .controls__button {
-  min-width: 140px;
   padding: 0.85rem 1.5rem;
-  border-radius: 14px;
   border: none;
-  font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
   transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
@@ -98,15 +90,4 @@ div#MainScreen .controls__button:disabled {
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
-}
-
-@media (max-width: 600px) {
-  div#MainScreen {
-    padding: 1.5rem;
-  }
-
-  div#MainScreen .content_wrapper {
-    border-radius: 20px;
-    padding: 1.25rem;
-  }
 }

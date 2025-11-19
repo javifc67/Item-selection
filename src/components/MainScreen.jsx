@@ -9,7 +9,10 @@ export default function MainScreen({ config, sendResult }) {
     }
     return [Array.isArray(config?.items) ? config.items : []];
   }, [config?.rounds, config?.items]);
-
+  const [size, setSize] = useState({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
   const [currentRound, setCurrentRound] = useState(0);
   const [roundSelections, setRoundSelections] = useState(() => rounds.map(() => []));
   const [hasSubmitted, setHasSubmitted] = useState(false);
@@ -19,6 +22,27 @@ export default function MainScreen({ config, sendResult }) {
     setRoundSelections(rounds.map(() => []));
     setHasSubmitted(false);
   }, [rounds]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const windowWidth = window.innerWidth;
+      const windowHeight = window.innerHeight;
+
+      const aspectRatio = 16 / 9;
+      let width = windowWidth * 0.9;
+      let height = width / aspectRatio;
+
+      if (height > windowHeight * 0.9) {
+        height = windowHeight * 0.9;
+        width = height * aspectRatio;
+      }
+
+      setSize({ width, height });
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const items = rounds[currentRound] || [];
   const selectedPositions = roundSelections[currentRound] || [];
@@ -75,9 +99,13 @@ export default function MainScreen({ config, sendResult }) {
       style={{ backgroundImage: config?.backgroundImg ? `url(${config.backgroundImg})` : "none" }}
     >
       <div className="content_wrapper">
-        {config?.title && <h1 className="title">{config.title}</h1>}
+        {config?.title && (
+          <h1 className="title" style={{ fontSize: size.width * 0.04 }}>
+            {config.title}
+          </h1>
+        )}
         {config?.rounds?.length > 1 && (
-          <div className="round_indicator">
+          <div className="round_indicator" style={{ fontSize: size.width * 0.025 }}>
             Ronda: {currentRound + 1}/{rounds.length}
           </div>
         )}
@@ -90,15 +118,28 @@ export default function MainScreen({ config, sendResult }) {
               item={item}
               isSelected={selectedPositions.includes(index)}
               onToggle={handleToggle}
+              size={size}
+              nItems={items.length}
             />
           ))}
         </div>
-        <div className="controls">
+        <div
+          className="controls"
+          style={{
+            padding: size.width * 0.05,
+            paddingTop: size.width * 0.01,
+            paddingBottom: size.width * 0.01,
+            fontSize: size.width * 0.02,
+            gap: size.width * 0.02,
+            borderRadius: size.width * 0.02,
+          }}
+        >
           <button
             type="button"
             className="controls__button controls__button--send"
             onClick={handleSend}
             disabled={hasSubmitted}
+            style={{ padding: size.width * 0.01, borderRadius: size.width * 0.01 }}
           >
             Enviar
           </button>
@@ -107,6 +148,7 @@ export default function MainScreen({ config, sendResult }) {
             className="controls__button controls__button--reset"
             onClick={handleReset}
             disabled={hasSubmitted}
+            style={{ padding: size.width * 0.01, borderRadius: size.width * 0.01 }}
           >
             Resetear
           </button>
