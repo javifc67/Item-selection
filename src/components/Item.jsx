@@ -1,30 +1,29 @@
+import useSound from "../hooks/useSound";
 import "./../assets/scss/Item.scss";
 
 export default function Item({ index, item, isSelected, onToggle, size, nItems }) {
+  const selectSound = useSound("/sounds/select_item.wav");
+
   const hasImage = typeof item?.img === "string" && item.img.trim() !== "";
   const label = typeof item?.label === "string" ? item.label : "";
 
-  // Calcular tamaño responsivo basado en disponibilidad de espacio
-  // Se ajusta por el número de items y el ancho disponible
-  const minItemSize = 100; // Tamaño mínimo en px
-  const maxItemSize = 200; // Tamaño máximo en px
-  const itemsPerRow = Math.max(1, Math.floor(size.width / 170)); // Mínimo 170px por item
-  const availableSpace = size.width * 0.92; // 92% del ancho disponible
-  const itemSize = Math.max(
-    minItemSize,
-    Math.min(
-      (availableSpace / itemsPerRow) * 0.85, // 85% del espacio por fila
-      Math.min(maxItemSize, size.height * 0.35), // Máximo 35% de la altura disponible
-    ),
-  );
+  const minItemSize = 60;
+  const itemsPerRow = Math.max(1, Math.floor(size.width / 200));
+
+  const itemSizeByWidth = size.width / itemsPerRow;
+
+  const itemSizeByHeight = size.height * 0.75;
+
+  const itemSize = Math.max(minItemSize, Math.min(itemSizeByWidth, itemSizeByHeight));
 
   const padding = itemSize * 0.06;
   const contentPadding = itemSize * 0.04;
-  const imageMaxWidth = itemSize * 0.65;
-  const fontSize = Math.max(10, itemSize * 0.11);
+  const imageMaxWidth = itemSize * 0.7;
+  const fontSize = Math.max(10, itemSize * 0.12);
 
   const handleClick = () => {
     if (typeof onToggle === "function") {
+      selectSound.play();
       onToggle(index);
     }
   };

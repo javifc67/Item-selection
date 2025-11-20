@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from "react";
 import "./../assets/scss/MainScreen.scss";
 import Item from "./Item";
+import useSound from "../hooks/useSound";
 
-export default function MainScreen({ config, sendResult }) {
+export default function MainScreen({ config, sendResult, solved, solvedTrigger }) {
   const rounds = useMemo(() => {
     if (Array.isArray(config?.rounds) && config.rounds.length > 0) {
       return config.rounds;
@@ -16,6 +17,20 @@ export default function MainScreen({ config, sendResult }) {
   const [currentRound, setCurrentRound] = useState(0);
   const [roundSelections, setRoundSelections] = useState(() => rounds.map(() => []));
   const [hasSubmitted, setHasSubmitted] = useState(false);
+
+  const items = rounds[currentRound] || [];
+  const selectedPositions = roundSelections[currentRound] || [];
+
+  const sendSound = useSound("/sounds/next_round.mp3");
+  const resetSound = useSound("/sounds/reset.mp3");
+
+  useEffect(() => {
+    if (solved) {
+      //show message
+    } else {
+      handleReset();
+    }
+  }, [solvedTrigger]);
 
   useEffect(() => {
     setCurrentRound(0);
@@ -44,9 +59,6 @@ export default function MainScreen({ config, sendResult }) {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const items = rounds[currentRound] || [];
-  const selectedPositions = roundSelections[currentRound] || [];
-
   const handleToggle = (index) => {
     setRoundSelections((prev) =>
       prev.map((positions, roundIndex) => {
@@ -62,13 +74,14 @@ export default function MainScreen({ config, sendResult }) {
     setCurrentRound(0);
     setRoundSelections(rounds.map(() => []));
     setHasSubmitted(false);
+    resetSound.play();
   };
 
   const handleSend = () => {
     if (hasSubmitted) {
       return;
     }
-
+    sendSound.play();
     if (currentRound < rounds.length - 1) {
       setCurrentRound((prev) => prev + 1);
       return;
@@ -137,7 +150,9 @@ export default function MainScreen({ config, sendResult }) {
           <button
             type="button"
             className="controls__button controls__button--send"
-            onClick={handleSend}
+            onClick={() => {
+              handleSend();
+            }}
             disabled={hasSubmitted}
             style={{ padding: size.width * 0.01, borderRadius: size.width * 0.01 }}
           >
@@ -146,7 +161,9 @@ export default function MainScreen({ config, sendResult }) {
           <button
             type="button"
             className="controls__button controls__button--reset"
-            onClick={handleReset}
+            onClick={() => {
+              handleReset();
+            }}
             disabled={hasSubmitted}
             style={{ padding: size.width * 0.01, borderRadius: size.width * 0.01 }}
           >

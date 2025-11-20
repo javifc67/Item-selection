@@ -12,6 +12,8 @@ export default function App() {
 
   const [loading, setLoading] = useState(true);
   const [fail, setFail] = useState(false);
+  const [solved, setSolved] = useState(false);
+  const [solvedTrigger, setSolvedTrigger] = useState(0);
 
   useEffect(() => {
     //Init Escapp client
@@ -109,7 +111,8 @@ export default function App() {
       Utils.log("Check solution Escapp response", success, erState);
       if (success) {
         try {
-          setFail(false);
+          setSolved(success);
+          setSolvedTrigger((prev) => prev + 1);
 
           setTimeout(() => {
             submitPuzzleSolution(_solution);
@@ -118,7 +121,8 @@ export default function App() {
           Utils.log("Error in checkNextPuzzle", e);
         }
       } else {
-        setFail(true);
+        setSolved(success);
+        setSolvedTrigger((prev) => prev + 1);
       }
     });
   }
@@ -138,7 +142,9 @@ export default function App() {
       }`}
     >
       <div className={`main-background ${fail ? "fail" : ""}`}>
-        {!loading && <MainScreen config={appSettings} sendResult={checkResult} />}
+        {!loading && (
+          <MainScreen config={appSettings} sendResult={checkResult} solved={solved} solvedTrigger={solvedTrigger} />
+        )}
       </div>
     </div>
   );
